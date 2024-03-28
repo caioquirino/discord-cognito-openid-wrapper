@@ -1,12 +1,23 @@
 # Discord OpenID Connect Wrapper for Cognito
 
-## This repository is a direct fork from [github-cognito-openid-wrapper](https://github.com/TimothyJones/github-cognito-openid-wrapper). I just modify the source code to make it work with Discord API.
+## This repository is an indirect fork from [github-cognito-openid-wrapper](https://github.com/TimothyJones/github-cognito-openid-wrapper). Qwerqy just modified the source code to make it work with Discord API.
+## This repository is a direct fork from [discord-cognito-openid-wrapper](https://github.com/qwerqy/discord-cognito-openid-wrapper). I am modernizing the code to be in sync with the latest Timothy work, while being compatible with Discord.
 
-# Original Author README:
+My motivation is to make this generic enough to feed it back to Timothy's awesome work, in a way it can be customised and used with also other providers (not just discord).
 
-Do you want to add GitHub as an OIDC (OpenID Connect) provider to an AWS Cognito User Pool? Have you run in to trouble because GitHub only provides OAuth2.0 endpoints, and doesn't support OpenID Connect?
 
-This project allows you to wrap your GitHub OAuth App in an OpenID Connect layer, allowing you to use it with AWS Cognito.
+[![Build, lint, test](https://github.com/caioquirino/discord-cognito-openid-wrapper/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/caioquirino/discord-cognito-openid-wrapper/actions/workflows/build-and-test.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f787719be529b1c0e8ee/maintainability)](https://codeclimate.com/github/caioquirino/discord-cognito-openid-wrapper/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f787719be529b1c0e8ee/test_coverage)](https://codeclimate.com/github/caioquirino/discord-cognito-openid-wrapper/test_coverage)
+[![Known Vulnerabilities](https://snyk.io/test/github/caioquirino/discord-cognito-openid-wrapper/badge.svg?targetFile=package.json)](https://snyk.io/test/github/caioquirino/discord-cognito-openid-wrapper?targetFile=package.json)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+Do you want to add Discord as an OIDC (OpenID Connect) provider to an AWS Cognito User Pool? Have you run in to trouble because Discord only provides OAuth2.0 endpoints, and doesn't support OpenID Connect?
+
+This project allows you to wrap your Discord OAuth App in an OpenID Connect layer, allowing you to use it with AWS Cognito.
 
 Here are some questions you may immediately have:
 
@@ -19,17 +30,17 @@ Here are some questions you may immediately have:
   user identity data, any shim must be custom written for the particular OAuth
   implementation that's wrapped.
 
-- **GitHub is very popular, has someone written this specific custom wrapper
+- **Discord is very popular, has someone written this specific custom wrapper
   before?** As far as I can tell, if it has been written, it has not been open
   sourced. Until now!
 
 ## Project overview
 
-When deployed, this project sits between Cognito and GitHub:
+When deployed, this project sits between Cognito and Discord:
 
 ![Overview](docs/overview.png)
 
-This allows you to use GitHub as an OpenID Identity Provider (IdP) for federation with a Cognito User Pool.
+This allows you to use Discord as an OpenID Identity Provider (IdP) for federation with a Cognito User Pool.
 
 The project implements everything needed by the [OIDC User Pool IdP authentication flow](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-oidc-flow.html) used by Cognito.
 
@@ -63,11 +74,9 @@ You will need to:
 
 - Create a Cognito User Pool ([instructions](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-as-user-directory.html)).
 - Configure App Integration for your User Pool ([instructions](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-configuring-app-integration.html)). Note down the domain name.
-- Create a GitHub OAuth App ([instructions](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/), with the following settings:
-  - Authorization callback URL: `https://<Your Cognito Domain>/oauth2/idpresponse`
-  - Note down the Client ID and secret
-
-(If you use GitHub Enterprise, you need the API & Login URL. This is usually `https://<GitHub Enterprise Host>/api/v3` and `https://<GitHub Enterprise Host>`.)
+- Create a Discord OAuth App ([instructions](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/), with the following settings:
+    - Authorization callback URL: `https://<Your Cognito Domain>/oauth2/idpresponse`
+    - Note down the Client ID and secret
 
 Next you need to decide if you'd like to deploy with lambda/API Gateway (follow Step 2a), or as a node server (follow Step 2b)
 
@@ -75,8 +84,8 @@ Next you need to decide if you'd like to deploy with lambda/API Gateway (follow 
 
 - Install the `aws` and `sam` CLIs from AWS:
 
-  - `aws` ([install instructions](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)) and configured
-  - `sam` ([install instructions](https://docs.aws.amazon.com/lambda/latest/dg/sam-cli-requirements.html))
+    - `aws` ([install instructions](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)) and configured
+    - `sam` ([install instructions](https://docs.aws.amazon.com/lambda/latest/dg/sam-cli-requirements.html))
 
 - Run `aws configure` and set appropriate access keys etc
 - Set environment variables for the OAuth App client/secret, callback url, stack name, etc:
@@ -107,16 +116,16 @@ Next you need to decide if you'd like to deploy with lambda/API Gateway (follow 
 ### 3: Finalise Cognito configuration
 
 - Configure the OIDC integration in AWS console for Cognito (described below, but following [these instructions](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-oidc-idp.html)). The following settings are required:
-  - Client ID: The GitHub Client ID above
-  - Authorize scope: `openid read:user user:email`
-  - Issuer: either `https://<Your API Gateway DNS name>/Prod` (for lambda with API gateway, replace `Prod` with the correct stage name) or `https://<your webserver>/` (for the node server).
-  - If you have deployed the web app: Run discovery (big blue button next to Issuer).
-  - If you have deployed the lambda/Gateway: For some reason, Cognito is unable to
-    do OpenID Discovery. You will need to configure the endpoints manually. They are:
-    - Authorization endpoint: `https://<Your API Gateway DNS name>/Prod/authorize`
-    - Token endpoint: `https://<Your API Gateway DNS name>/Prod/token`
-    - Userinfo endpoint: `https://<Your API Gateway DNS name>/Prod/userinfo`
-    - JWKS uri: `https://<Your API Gateway DNS name>/Prod/.well-known/jwks.json`
+    - Client ID: The Discord Client ID above
+    - Authorize scope: `openid read:user user:email`
+    - Issuer: `https://<Your API Gateway DNS name>/${Stage_Name}` or `https://<your webserver>/` (for the node server).
+    - If you have deployed the web app: Run discovery (big blue button next to Issuer).
+    - If you have deployed the lambda/Gateway: For some reason, Cognito is unable to
+      do OpenID Discovery. You will need to configure the endpoints manually. They are:
+        - Authorization endpoint: `https://<Your API Gateway DNS name>/${Stage_Name}/authorize`
+        - Token endpoint: `https://<Your API Gateway DNS name>/${Stage_Name}/token`
+        - Userinfo endpoint: `https://<Your API Gateway DNS name>/${Stage_Name}/userinfo`
+        - JWKS uri: `https://<Your API Gateway DNS name>/${Stage_Name}/.well-known/jwks.json`
 - Configure the Attribute Mapping in the AWS console:
 
 ![Attribute mapping](docs/attribute-mapping.png)
@@ -124,6 +133,16 @@ Next you need to decide if you'd like to deploy with lambda/API Gateway (follow 
 - Ensure that your new provider is enabled under **Enabled Identity Providers** on the App Client Settings screen under App Integration.
 
 That's it! If you need to redeploy the lambda/API gateway solution, all you need to do is run `npm run deploy` again.
+
+### Logging
+
+This shim also supports logging with Winston. By default, all logging goes to
+STDOUT. Beware that if you set the log level to DEBUG, then sensitive user
+information may be logged.
+
+If you're using the node server, you can also use Splunk for logging.
+Environment variables configuring splunk are commented in `example-config.sh`. The Splunk HEC URL and access
+token are required, and you can also set the source, sourcetype & index for all logged events.
 
 ## The details
 
@@ -141,8 +160,8 @@ used for determining whether a user is allowed to access a resource (like
 private user profile data). In order to do this, it's usually necessary for
 _authentication_ of the user to happen before authorisation.
 
-This means that most OAuth2.0 implementations (including GitHub) [include authentication in a step of the authorisation process](https://medium.com/@darutk/new-architecture-of-oauth-2-0-and-openid-connect-implementation-18f408f9338d).
-For all practical purposes, most OAuth2.0 implementations (including GitHub)can
+This means that most OAuth2.0 implementations (including Discord) [include authentication in a step of the authorisation process](https://medium.com/@darutk/new-architecture-of-oauth-2-0-and-openid-connect-implementation-18f408f9338d).
+For all practical purposes, most OAuth2.0 implementations (including Discord)can
 be thought of as providing both authorisation and authentication.
 
 Below is a diagram of the authentication code flow for OAuth:
@@ -169,14 +188,14 @@ describing the authenticated user can be accessed.
 OpenID Connect describes a standard way to get user data, and is therefore a good choice
 for identity federation.
 
-### A custom shim for GitHub
+### A custom shim for Discord
 
-This project provides the OpenID shim to wrap GitHub's OAuth implementation, by combining the two
+This project provides the OpenID shim to wrap Discord's OAuth implementation, by combining the two
 diagrams:
 
-![GitHub Shim](docs/shim.svg)
+![Discord Shim](docs/shim.svg)
 
-The userinfo request is handled by joining two GitHub API requests: `/user` and `/user/emails`.
+The userinfo request is handled by joining two Discord API requests: `/user` and `/user/emails`.
 
 You can compare this workflow to the documented Cognito workflow [here](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-oidc-flow.html)
 
@@ -210,7 +229,7 @@ You can compare this workflow to the documented Cognito workflow [here](https://
 - `scripts/create-key.sh`: If the private key is missing, generate a new one.
   This is run as a preinstall script before `npm install`
 - `scripts/deploy.sh`: This is the deploy part of `npm run deploy`. It uploads
-  the dist folder to S3, and then creates the cloudformation stack that contains  
+  the dist folder to S3, and then creates the cloudformation stack that contains
   the API gateway and lambdas
 
 #### Tests
@@ -218,8 +237,8 @@ You can compare this workflow to the documented Cognito workflow [here](https://
 Tests are provided with [Jest](https://jestjs.io/) using
 [`chai`'s `expect`](http://www.chaijs.com/api/bdd/), included by a shim based on [this blog post](https://medium.com/@RubenOostinga/combining-chai-and-jest-matchers-d12d1ffd0303).
 
-[Pact](http://pact.io) consumer tests for the GitHub API connection are provided
-in `src/github.pact.test.js`. There is currently no provider validation performed.
+[Pact](http://pact.io) consumer tests for the Discord API connection are provided
+in `src/discord.pact.test.js`. There is currently no provider validation performed.
 
 #### Private key
 
@@ -252,7 +271,7 @@ A full OpenID implementation would also include:
 
 **Known issues**
 
-none
+See [the issue tracker](https://github.com/caioquirino/discord-cognito-openid-wrapper/issues) for an up to date list.
 
 ## Extending
 
@@ -260,18 +279,13 @@ This section contains pointers if you would like to extend this shim.
 
 ### Using other OAuth providers
 
-If you want to use a provider other than GitHub, you'll need to change the contents of `userinfo` in `src/openid.js`.
-
-### Using a custom GitHub location
-
-If you're using an on-site GitHub install, you will need to change the API
-endpoints used when the `github` object is initialised.
+If you want to use a provider other than Discord, you'll need to change the contents of `userinfo` in `src/openid.js`.
 
 ### Including additional user information
 
-If you want to include custom claims based on other GitHub data,
+If you want to include custom claims based on other Discord data,
 you can extend `userinfo` in `src/openid.js`. You may need to add extra API
-client calls in `src/github.js`
+client calls in `src/discord.js`
 
 ## Contributing
 
@@ -282,11 +296,11 @@ Contributions are welcome, especially for the missing features! Pull requests an
 ### How do I use this to implement Cognito logins in my app?
 
 Login requests from your app go directly to Cognito, rather than this shim.
-This is because the shim sits only between Cognito and GitHub, not between your
-app and GitHub. See the [Cognito app integration instructions](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-integration.html)
+This is because the shim sits only between Cognito and Discord, not between your
+app and Discord. See the [Cognito app integration instructions](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-integration.html)
 for more details.
 
-### Can I use this shim to connect to GitHub directly from another OpenID client?
+### Can I use this shim to connect to Discord directly from another OpenID client?
 
 Yes. This implementation isn't complete, as it focusses exclusively on
 Cognito's requirements. However, it does follow the OpenID spec, and is
@@ -298,6 +312,30 @@ missing features section above for one or two caveats.
 If you build anything cool, ping me [@JonesTim](https://twitter.com/JonesTim) on
 twitter (or open an issue if you have any problems).
 
+### This is so useful! How can I thank you?
+
+If you'd like to support the work that I have done (and will do) maintaining this project, you can consider [sponsoring me on github](https://github.com/sponsors/caioquirino)
+
 ## License
 
 [BSD 3-Clause License](LICENSE)
+
+## Contributors ✨
+
+Although I've done most of the work on this project, I wasn't the only person who has contributed. Here is a list of everyone who has contributed to this project ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

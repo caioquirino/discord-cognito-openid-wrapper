@@ -1,14 +1,16 @@
+const logger = require('./connectors/logger');
 const { NumericDate } = require('./helpers');
 const crypto = require('./crypto');
 const github = require('./github');
 
 const getJwks = () => ({ keys: [crypto.getPublicKey()] });
 
-const getUserInfo = accessToken =>
+const getUserInfo = (accessToken) =>
   Promise.all([
     github()
       .getUserDetails(accessToken)
-      .then(userDetails => {
+      .then((userDetails) => {
+        logger.debug('Fetched user details: %j', userDetails, {});
         // Here we map the github user response to the standard claims from
         // OpenID. The mapping was constructed by following
         // https://developer.github.com/v3/users/
@@ -25,24 +27,34 @@ const getUserInfo = accessToken =>
           updated_at: NumericDate(
             // OpenID requires the seconds since epoch in UTC
             new Date(Date.parse(userDetails.updated_at))
-          )
+          ),
         };
+        logger.debug('Resolved claims: %j', claims, {});
         return claims;
       }),
     github()
       .getUserEmails(accessToken)
-      .then(userData => {
+      .then((userData) => {
+        logger.debug('Fetched user data: %j', userData, {});
         const primaryEmail = userData.email;
         if (primaryEmail === undefined) {
           throw new Error('User did not have a primary email address');
         }
         const claims = {
           email: primaryEmail.email,
-          email_verified: userData.verified
+          email_verified: userData.verified,
         };
+        logger.debug('Resolved claims: %j', claims, {});
         return claims;
-      })
-  ]).then(claims => claims.reduce((acc, claim) => ({ ...acc, ...claim }), {}));
+      }),
+  ]).then((claims) => {
+    const mergedClaims = claims.reduce(
+      (acc, claim) => ({ ...acc, ...claim }),
+      {}
+    );
+    logger.debug('Resolved combined claims: %j', mergedClaims, {});
+    return mergedClaims;
+  });
 
 const getAuthorizeUrl = (client_id, scope, state, response_type) =>
   github().getAuthorizeUrl(client_id, scope, state, response_type);
@@ -50,7 +62,8 @@ const getAuthorizeUrl = (client_id, scope, state, response_type) =>
 const getTokens = (code, state, host) =>
   github()
     .getToken(code, state)
-    .then(discordToken => {
+    .then((discordToken) => {
+      logger.debug('Got token: %s', discordToken, {});
       // GitHub returns scopes separated by commas
       // But OAuth wants them to be spaces
       // https://tools.ietf.org/html/rfc6749#section-5.1
@@ -66,7 +79,7 @@ const getTokens = (code, state, host) =>
       // exp - expiry time for the id token (seconds since epoch in UTC)
       // iat - time that the JWT was issued (seconds since epoch in UTC)
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const payload = {
           // This was commented because Cognito times out in under a second
           // and generating the userInfo takes too long.
@@ -78,20 +91,22 @@ const getTokens = (code, state, host) =>
         const tokenResponse = {
           ...discordToken,
           scope,
-          id_token: idToken
+          id_token: idToken,
         };
+
+        logger.debug('Resolved token response: %j', tokenResponse, {});
 
         resolve(tokenResponse);
       });
     });
 
-const getConfigFor = host => ({
+const getConfigFor = (host) => ({
   issuer: `https://${host}`,
   authorization_endpoint: `https://${host}/authorize`,
   token_endpoint: `https://${host}/token`,
   token_endpoint_auth_methods_supported: [
     'client_secret_basic',
-    'private_key_jwt'
+    'private_key_jwt',
   ],
   token_endpoint_auth_signing_alg_values_supported: ['RS256'],
   userinfo_endpoint: `https://${host}/userinfo`,
@@ -104,7 +119,7 @@ const getConfigFor = host => ({
     'code',
     'code id_token',
     'id_token',
-    'token id_token'
+    'token id_token',
   ],
 
   subject_types_supported: ['public'],
@@ -123,8 +138,8 @@ const getConfigFor = host => ({
     'email_verified',
     'updated_at',
     'iss',
-    'aud'
-  ]
+    'aud',
+  ],
 });
 
 module.exports = {
@@ -133,4 +148,5 @@ module.exports = {
   getJwks,
   getConfigFor,
   getAuthorizeUrl
+,
 };

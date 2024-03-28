@@ -1,0 +1,119 @@
+{
+  "projectName": "github-cognito-openid-wrapper",
+  "projectOwner": "TimothyJones",
+  "repoType": "github",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "TimothyJones",
+      "name": "Timothy Jones",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/914369?v=4",
+      "profile": "https://github.com/TimothyJones",
+      "contributions": [
+        "code",
+        "doc",
+        "maintenance",
+        "question",
+        "infra"
+      ]
+    },
+    {
+      "login": "bethesque",
+      "name": "Beth Skurrie",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/446228?v=4",
+      "profile": "https://github.com/bethesque",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "derjust",
+      "name": "Sebastian J.",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2053353?v=4",
+      "profile": "https://github.com/derjust",
+      "contributions": [
+        "code",
+        "infra"
+      ]
+    },
+    {
+      "login": "DannyDouglass",
+      "name": "Danny Douglass",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/266481?v=4",
+      "profile": "http://dannydouglass.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "livnoni",
+      "name": "Livnoni",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/23154756?v=4",
+      "profile": "https://bridgecrew.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "BFUculsion",
+      "name": "Benjamin Follis",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/36120475?v=4",
+      "profile": "https://github.com/BFUculsion",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "cayblood",
+      "name": "Carl Youngblood",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6947?v=4",
+      "profile": "http://youngbloods.org/",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "dehli",
+      "name": "c.p.",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/5856011?v=4",
+      "profile": "https://deh.li/",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "DALDEI",
+      "name": "David Lee",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/286113?v=4",
+      "profile": "http://www.calldei.com/",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "ChristopheBougere",
+      "name": "Christophe Bougère",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1325474?v=4",
+      "profile": "https://medium.com/@christophe.bougere",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "mfogel",
+      "name": "Mike Fogel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/69902?v=4",
+      "profile": "http://mike.fogel.ca/",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

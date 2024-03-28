@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  ./rego-api-identity-proxy
+  Discord Cognito OpenID Wrapper (SSO)
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Runtime: nodejs8.10
+    Runtime: nodejs18.x
     Timeout: 15
     Environment:
       Variables:
@@ -36,8 +36,15 @@ Parameters:
     Type: String
     Default: 'https://discordapp.com/api'
     MinLength: 1
+  StageNameParameter:
+    Type: String
 
 Resources:
+  GithubOAuthApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref StageNameParameter
+      OpenApiVersion: "2.0"
   OpenIdDiscovery:
     Type: AWS::Serverless::Function
     Properties:
@@ -49,6 +56,7 @@ Resources:
           Properties:
             Path: /.well-known/openid-configuration
             Method: get
+            RestApiId: !Ref GithubOAuthApi
   Authorize:
     Type: AWS::Serverless::Function
     Properties:
@@ -60,6 +68,7 @@ Resources:
           Properties:
             Path: /authorize
             Method: get
+            RestApiId: !Ref GithubOAuthApi
   Token:
     Type: AWS::Serverless::Function
     Properties:
@@ -71,11 +80,13 @@ Resources:
           Properties:
             Path: /token
             Method: get
+            RestApiId: !Ref GithubOAuthApi
         PostResource:
           Type: Api
           Properties:
             Path: /token
             Method: post
+            RestApiId: !Ref GithubOAuthApi
   UserInfo:
     Type: AWS::Serverless::Function
     Properties:
@@ -87,11 +98,13 @@ Resources:
           Properties:
             Path: /userinfo
             Method: get
+            RestApiId: !Ref GithubOAuthApi
         PostResource:
           Type: Api
           Properties:
             Path: /userinfo
             Method: post
+            RestApiId: !Ref GithubOAuthApi
   Jwks:
     Type: AWS::Serverless::Function
     Properties:
@@ -103,8 +116,9 @@ Resources:
           Properties:
             Path: /.well-known/jwks.json
             Method: get
+            RestApiId: !Ref GithubOAuthApi
 
 Outputs:
   DiscordShimIssuer:
-    Description: 'Discord OpenID Shim Issuer'
-    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod'
+      Description: "Discord OpenID Shim Issuer"
+      Value: !Sub "https://${GithubOAuthApi}.execute-api.${AWS::Region}.amazonaws.com/${StageNameParameter}"
