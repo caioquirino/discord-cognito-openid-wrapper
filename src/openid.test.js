@@ -2,8 +2,6 @@ const openid = require('./openid');
 const discord = require('./discord');
 const crypto = require('./crypto');
 
-// FIXME: (caio) this is very likely to fail
-
 jest.mock('./discord');
 jest.mock('./crypto');
 
