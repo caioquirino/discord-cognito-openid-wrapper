@@ -12,7 +12,6 @@ const logger = require('./connectors/logger');
 
 const getApiEndpoints = (apiBaseUrl = DISCORD_API_URL) => ({
   userDetails: `${apiBaseUrl}/users/@me`,
-  userEmails: `${apiBaseUrl}/users/@me`,
   oauthToken: `${apiBaseUrl}/oauth2/token`,
   oauthAuthorize: `${apiBaseUrl}/oauth2/authorize`,
 });
@@ -42,6 +41,13 @@ const discordGet = (url, accessToken) =>
     },
   });
 
+
+/**
+ *
+ * @param apiBaseUrl
+ * @param loginBaseUrl
+ * @returns {import("./types").DiscordClient}
+ */
 module.exports = (apiBaseUrl, loginBaseUrl) => {
   const urls = getApiEndpoints(apiBaseUrl, loginBaseUrl || apiBaseUrl);
   return {
@@ -50,9 +56,7 @@ module.exports = (apiBaseUrl, loginBaseUrl) => {
         scope
       )}&state=${state}&response_type=${response_type}`,
     getUserDetails: (accessToken) =>
-      gitHubGet(urls.userDetails, accessToken).then(check),
-    getUserEmails: (accessToken) =>
-      gitHubGet(urls.userEmails, accessToken).then(check),
+      discordGet(urls.userDetails, accessToken).then(check),
     getToken: (code, state) => {
       const data = {
         // OAuth required fields

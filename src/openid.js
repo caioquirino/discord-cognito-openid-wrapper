@@ -1,48 +1,31 @@
 const logger = require('./connectors/logger');
 const { NumericDate } = require('./helpers');
 const crypto = require('./crypto');
-const github = require('./github');
+const discord = require('./discord');
 
 const getJwks = () => ({ keys: [crypto.getPublicKey()] });
 
 const getUserInfo = (accessToken) =>
   Promise.all([
-    github()
+    discord()
       .getUserDetails(accessToken)
       .then((userDetails) => {
         logger.debug('Fetched user details: %j', userDetails, {});
-        // Here we map the github user response to the standard claims from
+        // Here we map the discord user response to the standard claims from
         // OpenID. The mapping was constructed by following
-        // https://developer.github.com/v3/users/
+        // https://discord.com/developers/docs/topics/oauth2
         // and http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
         const claims = {
           sub: `${userDetails.id}`, // OpenID requires a string
           name: `${userDetails.username}#${userDetails.discriminator}`,
+          email: userDetails.email,
+          email_verified: userDetails.verified,
           preferred_username: userDetails.username,
           profile: 'https://discordapp.com',
           picture: `https://cdn.discordapp.com/avatars/${userDetails.id}/${
             userDetails.avatar
           }.png`,
           website: 'https://discordapp.com',
-          updated_at: NumericDate(
-            // OpenID requires the seconds since epoch in UTC
-            new Date(Date.parse(userDetails.updated_at))
-          ),
-        };
-        logger.debug('Resolved claims: %j', claims, {});
-        return claims;
-      }),
-    github()
-      .getUserEmails(accessToken)
-      .then((userData) => {
-        logger.debug('Fetched user data: %j', userData, {});
-        const primaryEmail = userData.email;
-        if (primaryEmail === undefined) {
-          throw new Error('User did not have a primary email address');
-        }
-        const claims = {
-          email: primaryEmail.email,
-          email_verified: userData.verified,
         };
         logger.debug('Resolved claims: %j', claims, {});
         return claims;
@@ -57,10 +40,10 @@ const getUserInfo = (accessToken) =>
   });
 
 const getAuthorizeUrl = (client_id, scope, state, response_type) =>
-  github().getAuthorizeUrl(client_id, scope, state, response_type);
+  discord().getAuthorizeUrl(client_id, scope, state, response_type);
 
 const getTokens = (code, state, host) =>
-  github()
+  discord()
     .getToken(code, state)
     .then((discordToken) => {
       logger.debug('Got token: %s', discordToken, {});

@@ -11,6 +11,10 @@ const MOCK_TOKEN = 'MOCK_TOKEN';
 const MOCK_CODE = 'MOCK_CODE';
 
 describe('openid domain layer', () => {
+
+  /**
+   * @type {import("./test_types").JestMocked<import("./types").DiscordClient>}
+   */
   const discordMock = {
     getUserEmails: jest.fn(),
     getUserDetails: jest.fn(),
@@ -23,16 +27,13 @@ describe('openid domain layer', () => {
   });
 
   describe('userinfo function', () => {
-    const mockEmailsWithPrimary = (withPrimary) => {
+    const mockEmails = () => {
       discordMock.getUserEmails.mockImplementation(() =>
-        Promise.resolve([
-          {
-            primary: false,
-            email: 'not-this-email@example.com',
-            verified: false,
-          },
-          { primary: withPrimary, email: 'email@example.com', verified: true },
-        ])
+        Promise.resolve(
+        {
+          email: 'email@example.com',
+          verified: true,
+        })
       );
     };
 
@@ -41,43 +42,37 @@ describe('openid domain layer', () => {
         beforeEach(() => {
           discordMock.getUserDetails.mockImplementation(() =>
             Promise.resolve({
-              sub: 'Some sub',
-              name: 'some name',
-              login: 'username',
-              html_url: 'some profile',
-              avatar_url: 'picture.jpg',
-              blog: 'website',
-              updated_at: '2008-01-14T04:33:35Z',
+              "id": "80351110224678912",
+              "username": "Nelly",
+              "discriminator": "1337",
+              "avatar": "8342729096ea3675442027381ff50dfe",
+              "verified": true,
+              "email": "nelly@discord.com",
+              "flags": 64,
+              "banner": "06c16474723fe537c283b8efa61a30c8",
+              "accent_color": 16711680,
+              "premium_type": 1,
+              "public_flags": 64
             })
           );
         });
-        describe('with a primary email', () => {
+        describe('with an email', () => {
           beforeEach(() => {
-            mockEmailsWithPrimary(true);
+            mockEmails();
           });
           it('Returns the aggregated complete object', async () => {
             const response = await openid.getUserInfo(MOCK_TOKEN);
             expect(response).toEqual({
-              email: 'email@example.com',
-              email_verified: true,
-              name: 'some name',
-              picture: 'picture.jpg',
-              preferred_username: 'username',
-              profile: 'some profile',
-              sub: 'undefined',
-              updated_at: 1200285215,
-              website: 'website',
+              "email": "nelly@discord.com",
+              "email_verified": true,
+              "name": "Nelly#1337",
+              "picture": "https://cdn.discordapp.com/avatars/80351110224678912/8342729096ea3675442027381ff50dfe.png",
+              "preferred_username": "Nelly",
+              "profile": "https://discordapp.com",
+              "sub": "80351110224678912",
+              "website": "https://discordapp.com"
             });
           });
-        });
-        describe('without a primary email', () => {
-          beforeEach(() => {
-            mockEmailsWithPrimary(false);
-          });
-          it('fails', () =>
-            expect(openid.getUserInfo('MOCK_TOKEN')).rejects.toThrow(
-              new Error('User did not have a primary email address')
-            ));
         });
       });
     });
