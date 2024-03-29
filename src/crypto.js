@@ -1,6 +1,6 @@
 const JSONWebKey = require('json-web-key');
 const jwt = require('jsonwebtoken');
-const { GITHUB_CLIENT_ID } = require('./config');
+const { DISCORD_CLIENT_ID } = require('./config');
 const logger = require('./connectors/logger');
 
 const KEY_ID = 'jwtRS256';
