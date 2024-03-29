@@ -1,9 +1,10 @@
 locals {
+  github_tag = var.use_local_artifacts ? "local" : var.override_artifact_tag
   api_integrations = {
     "open_id_discovery" = {
       path           = "/.well-known/openid-configuration",
       method         = "GET",
-      lambda_handler = "open-id-configuration.js"
+      lambda_handler = "openIdConfiguration.js"
     },
     "authorize" = {
       path           = "/authorize",

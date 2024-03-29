@@ -20,3 +20,13 @@ variable "discord_login_url" {
 variable "stage_name" {
   type = string
 }
+
+variable "override_artifact_tag" {
+  type = string
+  default = null
+}
+
+variable "use_local_artifacts" {
+  type = bool
+  default = false
+}

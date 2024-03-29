@@ -5,15 +5,21 @@ resource "aws_apigatewayv2_api" "github_oauth_http_api" {
   description   = "Discord Cognito OpenID Wrapper (SSO) using HTTP API"
 }
 
+data "external" "downloaded_artifact" {
+  program = ["bash", "${path.module}/download_artifact.sh", local.github_tag]
+}
+
 data "archive_file" "lambda_file" {
   for_each = tomap(local.api_integrations)
   type = "zip"
   source {
-    content  = file("${path.module}/../dist-lambda/${each.value.lambda_handler}.js")
+    content  = file("${data.external.downloaded_artifact.result["dir"]}/dist-lambda/${each.value.lambda_handler}")
     filename = "index.js"
   }
   output_file_mode = "0666"
-  output_path      = "${path.module}/../dist-lambda/${each.value.lambda_handler}.js"
+  output_path      = "${data.external.downloaded_artifact.result["dir"]}/dist-lambda/${each.value.lambda_handler}"
+  
+  depends_on = [ data.external.downloaded_artifact ]
 }
 
 resource "aws_lambda_function" "lambda" {
