@@ -3,6 +3,7 @@ coverage
 pacts
 dist-web
 dist-lambda
+dist
 logs
 
 config.sh

@@ -8,4 +8,4 @@ pnpm i
 pnpm format:check
 pnpm lint
 pnpm build
-pnpm test
+pnpm prepare-release
