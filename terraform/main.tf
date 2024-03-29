@@ -30,7 +30,7 @@ resource "aws_lambda_function" "lambda" {
   runtime          = "nodejs20.x"
   filename         = data.archive_file.lambda_file[each.key].output_path
   source_code_hash = data.archive_file.lambda_file[each.key].output_base64sha256
-  role             = aws_iam_role.lambda_iam_role.id
+  role             = aws_iam_role.lambda_iam_role.arn
 
   environment {
     variables = {
