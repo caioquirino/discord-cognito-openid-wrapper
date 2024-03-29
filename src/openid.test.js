@@ -9,7 +9,6 @@ const MOCK_TOKEN = 'MOCK_TOKEN';
 const MOCK_CODE = 'MOCK_CODE';
 
 describe('openid domain layer', () => {
-
   /**
    * @type {import("./test_types").JestMocked<import("./types").DiscordClient>}
    */
@@ -27,8 +26,7 @@ describe('openid domain layer', () => {
   describe('userinfo function', () => {
     const mockEmails = () => {
       discordMock.getUserEmails.mockImplementation(() =>
-        Promise.resolve(
-        {
+        Promise.resolve({
           email: 'email@example.com',
           verified: true,
         })
@@ -40,17 +38,17 @@ describe('openid domain layer', () => {
         beforeEach(() => {
           discordMock.getUserDetails.mockImplementation(() =>
             Promise.resolve({
-              "id": "80351110224678912",
-              "username": "Nelly",
-              "discriminator": "1337",
-              "avatar": "8342729096ea3675442027381ff50dfe",
-              "verified": true,
-              "email": "nelly@discord.com",
-              "flags": 64,
-              "banner": "06c16474723fe537c283b8efa61a30c8",
-              "accent_color": 16711680,
-              "premium_type": 1,
-              "public_flags": 64
+              id: '80351110224678912',
+              username: 'Nelly',
+              discriminator: '1337',
+              avatar: '8342729096ea3675442027381ff50dfe',
+              verified: true,
+              email: 'nelly@discord.com',
+              flags: 64,
+              banner: '06c16474723fe537c283b8efa61a30c8',
+              accent_color: 16711680,
+              premium_type: 1,
+              public_flags: 64,
             })
           );
         });
@@ -61,14 +59,15 @@ describe('openid domain layer', () => {
           it('Returns the aggregated complete object', async () => {
             const response = await openid.getUserInfo(MOCK_TOKEN);
             expect(response).toEqual({
-              "email": "nelly@discord.com",
-              "email_verified": true,
-              "name": "Nelly#1337",
-              "picture": "https://cdn.discordapp.com/avatars/80351110224678912/8342729096ea3675442027381ff50dfe.png",
-              "preferred_username": "Nelly",
-              "profile": "https://discordapp.com",
-              "sub": "80351110224678912",
-              "website": "https://discordapp.com"
+              email: 'nelly@discord.com',
+              email_verified: true,
+              name: 'Nelly#1337',
+              picture:
+                'https://cdn.discordapp.com/avatars/80351110224678912/8342729096ea3675442027381ff50dfe.png',
+              preferred_username: 'Nelly',
+              profile: 'https://discordapp.com',
+              sub: '80351110224678912',
+              website: 'https://discordapp.com',
             });
           });
         });

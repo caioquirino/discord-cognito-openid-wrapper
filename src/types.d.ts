@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 
-type Snowflake = string
+type Snowflake = string;
 
 /**
  * https://discord.com/developers/docs/resources/user#user-object
@@ -20,22 +20,22 @@ type Snowflake = string
  * }
  */
 type User = {
-  id: Snowflake
-  username: string
-  discriminator: string
-  global_name?: string
-  avatar?: string
-  bot?: boolean
-  system?: boolean
-  mfa_enabled?: boolean
-  banner?: string
-  accent_color?: number
-  locale?: string
-  verified?: boolean
-  email?: string
-  public_flags?: number
-  avatar_decorations?: string
-}
+  id: Snowflake;
+  username: string;
+  discriminator: string;
+  global_name?: string;
+  avatar?: string;
+  bot?: boolean;
+  system?: boolean;
+  mfa_enabled?: boolean;
+  banner?: string;
+  accent_color?: number;
+  locale?: string;
+  verified?: boolean;
+  email?: string;
+  public_flags?: number;
+  avatar_decorations?: string;
+};
 
 /**
  * https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-access-token-response
@@ -49,16 +49,16 @@ type User = {
  * }
  */
 type Oauth2Token = {
-  access_token: string,
-  token_type: "Bearer",
-  expires_in: number,
-  refresh_token: string,
-  scope: string
-}
+  access_token: string;
+  token_type: 'Bearer';
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+};
 
 type DiscordClient = {
-  getAuthorizeUrl: (client_id, scope, state, response_type) => string
-  getUserDetails: (accessToken) => AxiosResponse<User>
+  getAuthorizeUrl: (client_id, scope, state, response_type) => string;
+  getUserDetails: (accessToken) => AxiosResponse<User>;
   // getUserEmails: (accessToken) => AxiosResponse<User>
-  getToken: (accessToken) => AxiosResponse<Oauth2Token>
-}
+  getToken: (accessToken) => AxiosResponse<Oauth2Token>;
+};

@@ -22,9 +22,7 @@ const getUserInfo = (accessToken) =>
           email_verified: userDetails.verified,
           preferred_username: userDetails.username,
           profile: 'https://discordapp.com',
-          picture: `https://cdn.discordapp.com/avatars/${userDetails.id}/${
-            userDetails.avatar
-          }.png`,
+          picture: `https://cdn.discordapp.com/avatars/${userDetails.id}/${userDetails.avatar}.png`,
           website: 'https://discordapp.com',
         };
         logger.debug('Resolved claims: %j', claims, {});
@@ -130,6 +128,5 @@ module.exports = {
   getUserInfo,
   getJwks,
   getConfigFor,
-  getAuthorizeUrl
-,
+  getAuthorizeUrl,
 };

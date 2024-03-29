@@ -5,7 +5,7 @@ const {
   DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET,
   COGNITO_REDIRECT_URI,
-  DISCORD_API_URL
+  DISCORD_API_URL,
   // DISCORD_LOGIN_URL
 } = require('./config');
 const logger = require('./connectors/logger');
@@ -40,7 +40,6 @@ const discordGet = (url, accessToken) =>
       Authorization: `Bearer ${accessToken}`,
     },
   });
-
 
 /**
  *
@@ -85,7 +84,7 @@ module.exports = (apiBaseUrl, loginBaseUrl) => {
           'Content-Type': 'application/json',
           Authorization: `Basic ${btoa(
             `${DISCORD_CLIENT_ID}:${DISCORD_CLIENT_SECRET}`
-          )}`
+          )}`,
         },
         data,
       }).then(check);
