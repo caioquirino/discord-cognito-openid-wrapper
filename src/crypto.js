@@ -4,14 +4,26 @@ const { DISCORD_CLIENT_ID } = require('./config');
 const logger = require('./connectors/logger');
 
 const KEY_ID = 'jwtRS256';
-const cert = require('../jwtRS256.key');
-const pubKey = require('../jwtRS256.key.pub');
+
+let cert;
+let publicKey;
+
+try {
+  // eslint-disable-next-line global-require, import/no-unresolved
+  cert = require('../jwtRS256.key');
+  // eslint-disable-next-line global-require, import/no-unresolved
+  publicKey = require('../jwtRS256.key.pub');
+} catch(error) {
+  cert = process.env.JWT_CERTIFICATE
+  publicKey = process.env.JWT_PUBLIC_KEY
+}
+
 
 module.exports = {
   getPublicKey: () => ({
     alg: 'RS256',
     kid: KEY_ID,
-    ...JSONWebKey.fromPEM(pubKey).toJSON(),
+    ...JSONWebKey.fromPEM(publicKey).toJSON(),
   }),
 
   makeIdToken: (payload, host) => {

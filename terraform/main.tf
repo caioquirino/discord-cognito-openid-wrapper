@@ -17,7 +17,7 @@ data "archive_file" "lambda_file" {
     filename = "index.js"
   }
   output_file_mode = "0666"
-  output_path      = "${data.external.downloaded_artifact.result["dir"]}/dist-lambda/${each.value.lambda_handler}"
+  output_path      = "${data.external.downloaded_artifact.result["dir"]}/dist-lambda/${each.value.lambda_handler}.zip"
   
   depends_on = [ data.external.downloaded_artifact ]
 }
