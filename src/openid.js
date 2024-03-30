@@ -20,9 +20,9 @@ const getUserInfo = (accessToken) =>
           email: userDetails.email,
           email_verified: userDetails.verified,
           preferred_username: userDetails.username,
-          profile: 'https://discordapp.com',
-          picture: `https://cdn.discordapp.com/avatars/${userDetails.id}/${userDetails.avatar}.png`,
-          website: 'https://discordapp.com',
+          profile: 'https://discord.com',
+          picture: `https://cdn.discordapp.com/avatars/${userDetails.id}/${userDetails.avatar}.webp`,
+          website: 'https://discord.com',
         };
         logger.debug('Resolved claims: %j', claims, {});
         return claims;

@@ -5,7 +5,7 @@ export DISCORD_CLIENT_ID=# <DISCORD OAuth App Client ID>
 export DISCORD_CLIENT_SECRET=# <DISCORD OAuth App Client Secret>
 export COGNITO_REDIRECT_URI=# https://<Your Cognito Domain>/oauth2/idpresponse
 
-export DISCORD_API_URL=https://discordapp.com/api
+export DISCORD_API_URL=https://discord.com/api
 
 # Variables required if Splunk logger is used
 # SPLUNK_URL=# https://<Splunk HEC>/services/collector/event/1.0

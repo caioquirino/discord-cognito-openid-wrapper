@@ -67,7 +67,7 @@ module.exports = (respond) => ({
       respond.error(error);
     }
   },
-  jwks: () => {
+                                                                                                                                                                                                                                                                                                    jwks: () => {
     const jwks = openid.getJwks();
     logger.info('Providing access to JWKS: %j', jwks, {});
     respond.success(jwks);
