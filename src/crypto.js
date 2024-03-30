@@ -13,11 +13,10 @@ try {
   cert = require('../jwtRS256.key');
   // eslint-disable-next-line global-require, import/no-unresolved
   publicKey = require('../jwtRS256.key.pub');
-} catch(error) {
-  cert = process.env.JWT_CERTIFICATE
-  publicKey = process.env.JWT_PUBLIC_KEY
+} catch (error) {
+  cert = process.env.JWT_CERTIFICATE;
+  publicKey = process.env.JWT_PUBLIC_KEY;
 }
-
 
 module.exports = {
   getPublicKey: () => ({
