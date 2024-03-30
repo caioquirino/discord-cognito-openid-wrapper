@@ -13,7 +13,6 @@
     "test-dev": "jest --runInBand --watch",
     "start": "webpack --watch --display errors-only",
     "lint": "eslint src --ext .js --config .eslintrc.json",
-    "preinstall": "bash ./scripts/create-key.sh",
     "prebuild-dist": "pnpm lint && pnpm test",
     "build-dist": "pnpm build",
     "predeploy": "pnpm build-dist",
