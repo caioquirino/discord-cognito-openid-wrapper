@@ -17,6 +17,19 @@ variable "discord_login_url" {
   type    = string
   default = "https://discordapp.com/api"
 }
+
+
+variable "jwt_private_key" {
+  type        = string
+  sensitive   = true
+  description = "JWT Private Key file. Use the script https://github.com/caioquirino/discord-cognito-openid-wrapper/blob/main/scripts/create-key.sh to generate one."
+}
+variable "jwt_public_key" {
+  type        = string
+  sensitive   = true
+  description = "Use the script https://github.com/caioquirino/discord-cognito-openid-wrapper/blob/main/scripts/create-key.sh to generate one."
+}
+
 variable "stage_name" {
   type = string
 }

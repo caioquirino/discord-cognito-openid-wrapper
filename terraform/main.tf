@@ -34,11 +34,13 @@ resource "aws_lambda_function" "lambda" {
 
   environment {
     variables = {
-      discord_client_id     = var.discord_client_id
-      discord_client_secret = var.discord_client_secret
-      cognito_redirect_uri  = var.cognito_redirect_uri
-      discord_api_url       = var.discord_url
-      discord_login_url     = var.discord_login_url
+      DISCORD_CLIENT_ID     = var.discord_client_id
+      DISCORD_CLIENT_SECRET = var.discord_client_secret
+      COGNITO_REDIRECT_URI  = var.cognito_redirect_uri
+      DISCORD_API_URL       = var.discord_url
+      DISCORD_LOGIN_URL     = var.discord_login_url
+      JWT_PRIVATE_KEY       = var.jwt_private_key
+      JWT_PUBLIC_KEY        = var.jwt_public_key
     }
   }
 }

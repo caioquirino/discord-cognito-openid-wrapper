@@ -5,16 +5,16 @@ const logger = require('./connectors/logger');
 
 const KEY_ID = 'jwtRS256';
 
-let cert;
+let privateKey;
 let publicKey;
 
 try {
   // eslint-disable-next-line global-require, import/no-unresolved
-  cert = require('../jwtRS256.key');
+  privateKey = require('../jwtRS256.key');
   // eslint-disable-next-line global-require, import/no-unresolved
   publicKey = require('../jwtRS256.key.pub');
 } catch (error) {
-  cert = process.env.JWT_CERTIFICATE;
+  privateKey = process.env.JWT_PRIVATE_KEY;
   publicKey = process.env.JWT_PUBLIC_KEY;
 }
 
@@ -32,7 +32,7 @@ module.exports = {
       aud: DISCORD_CLIENT_ID,
     };
     logger.debug('Signing payload %j', enrichedPayload, {});
-    return jwt.sign(enrichedPayload, cert, {
+    return jwt.sign(enrichedPayload, privateKey, {
       expiresIn: '1h',
       algorithm: 'RS256',
       keyid: KEY_ID,
