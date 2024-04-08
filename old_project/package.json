@@ -1,0 +1,72 @@
+{
+  "name": "discord-cognito-openid-wrapper",
+  "version": "1.2.1",
+  "description": "A wrapper to enable AWS Cognito User Pools (which requires OpenID Connect) to talk to Discord (which only provides OAuth2.0)",
+  "main": "dist-web/server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/caioquirino/discord-cognito-openid-wrapper.git"
+  },
+  "scripts": {
+    "build": "webpack",
+    "test": "jest --runInBand --coverage",
+    "test-dev": "jest --runInBand --watch",
+    "start": "webpack --watch --display errors-only",
+    "lint": "eslint src --ext .js --config .eslintrc.json",
+    "prebuild-dist": "pnpm lint && pnpm test",
+    "build-dist": "pnpm build",
+    "predeploy": "pnpm build-dist",
+    "prerelease": "pnpm lint && pnpm test && pnpm build",
+    "format:base": "prettier \"src/**/*.{ts,js}\"",
+    "format:fix": "pnpm format:base --write",
+    "format:check": "pnpm format:base --check",
+    "release": "commit-and-tag-version",
+    "deploy": "bash ./scripts/deploy.sh",
+    "coverage": "jest --runInBand --coverage",
+    "snyk-protect": "snyk-protect",
+    "prepare": "pnpm snyk-protect",
+    "prepare-release": "mkdir -p dist && zip -r dist/lambda.zip dist-lambda/*"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@snyk/protect": "^1.1235.0",
+    "@types/jest": "^29.5.12",
+    "axios": "^1.6.3",
+    "body-parser": "^1.20.2",
+    "btoa": "^1.2.1",
+    "colors": "^1.4.0",
+    "express": "^4.18.1",
+    "json-web-key": "^0.4.0",
+    "jsonwebtoken": "^9.0.2",
+    "winston": "^3.8.2",
+    "winston-splunk-httplogger": "^3.1.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@pact-foundation/pact": "^9.18.1",
+    "all-contributors-cli": "^6.17.2",
+    "babel-jest": "^28.1.0",
+    "babel-loader": "^8.2.5",
+    "commit-and-tag-version": "^10.0.0",
+    "eslint": "^8.1.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.2.0",
+    "jest": "^28.1.0",
+    "jest-pact": "^0.9.4",
+    "nodemon": "^2.0.20",
+    "nodemon-webpack-plugin": "^4.8.1",
+    "prettier": "^2.6.2",
+    "raw-loader": "^0.5.1",
+    "webpack": "^5.76.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-node-externals": "^2.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "snyk": true
+}
